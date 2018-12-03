@@ -1,7 +1,10 @@
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
 from twilio.jwt.client import ClientCapabilityToken
+from twilio.twiml.voice_response import VoiceResponse
 
 
 class GetTokenView(View):
@@ -23,7 +26,11 @@ class GetTokenView(View):
         return JsonResponse({'token': token})
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class VoiceRequestView(View):
     def post(self, request, **kwargs):
-        print(request.POST)
-        print(kwargs)
+        """Returns TwiML instructions to Twilio's POST requests"""
+        response = VoiceResponse()
+        response.say('Calling {}'.format(request.POST['phoneNumber']), voice='alice')
+        response.dial(caller_id=settings.TWILIO['TWILIO_NUMBER'], number=request.POST['phoneNumber'])
+        return HttpResponse(str(response))

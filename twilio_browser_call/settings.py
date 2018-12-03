@@ -129,6 +129,7 @@ TWILIO = {
     'ACCOUNT_SID': '',
     'AUTH_TOKEN': '',
     'TWIML_APPLICATION_SID': '',
+    'TWILIO_NUMBER': '',
 }
 
 # Import local settings (if any)
