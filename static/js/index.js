@@ -1,10 +1,22 @@
+var call;
+
 $(document).ready(function() {
-    $('#call-customer').click(function(event) {
+    $('#call').click(function(event) {
         event.preventDefault();
         event.stopPropagation();
 
         var params = {"phoneNumber": '+919958956286'};
-        Twilio.Device.connect(params);
+        call = Twilio.Device.connect(params);
+    });
+
+    $('#hangup').click(function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (call) {
+            call.disconnect();
+            call = null;
+        }
     });
 
     $.get("/get-token/", {}, function(data) {
@@ -15,14 +27,15 @@ $(document).ready(function() {
 
 /* Callback to let us know Twilio Client is ready */
 Twilio.Device.ready(function (device) {
-    $('#call-customer').attr('disabled', false);
+    $('#call').attr('disabled', false);
 });
 
 /* Callback for when Twilio Client initiates a new connection */
 Twilio.Device.connect(function (connection) {
     // Enable the hang up button and disable the call buttons
     // hangUpButton.prop("disabled", false);
-    $('#call-customer').attr('disabled', true);
+    $('#call').attr('disabled', true);
+    $('#hangup').attr('disabled', false);
 
     // If phoneNumber is part of the connection, this is a call from a
     // support agent to a customer's phone
@@ -32,7 +45,8 @@ Twilio.Device.connect(function (connection) {
 });
 
 Twilio.Device.disconnect(function(connection) {
-    $('#call-customer').attr('disabled', false);
+    $('#call').attr('disabled', false);
+    $('#hangup').attr('disabled', true);
 
     // If phoneNumber is part of the connection, this is a call from a
     // support agent to a customer's phone
