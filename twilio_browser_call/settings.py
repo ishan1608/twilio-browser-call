@@ -51,10 +51,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'twilio_browser_call.urls'
 
+TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': TEMPLATE_DIRS,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,7 +121,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-TEMPLATE_DIRS = (os.path.join(BASE_DIR,  'templates'),)
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
+
+TWILIO = {
+    'ACCOUNT_SID': '',
+    'AUTH_TOKEN': '',
+    'TWIML_APPLICATION_SID': '',
+}
 
 # Import local settings (if any)
 try:
