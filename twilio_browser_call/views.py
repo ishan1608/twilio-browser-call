@@ -32,5 +32,15 @@ class VoiceRequestView(View):
         """Returns TwiML instructions to Twilio's POST requests"""
         response = VoiceResponse()
         response.say('Calling {}'.format(request.POST['phoneNumber']), voice='alice')
-        response.dial(caller_id=settings.TWILIO['TWILIO_NUMBER'], number=request.POST['phoneNumber'])
+        response.dial(caller_id=settings.TWILIO['TWILIO_NUMBER'], number=request.POST['phoneNumber'],
+                      recording_status_callback='https://ishanatmuz.pagekite.me/record-response/', recording_status_callback_method='POST',
+                      record='record-from-ringing-dual')
         return HttpResponse(str(response))
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class RecordResponseView(View):
+    def post(self, request, **kwargs):
+        """Call recording webhook"""
+        print(request.POST)  # Proxy for storing this in database
+        return HttpResponse()
